@@ -28,20 +28,21 @@ def F_test(x, y):
 
 
 def Newton(F, x0, y0, eps, N):
-    X0 = np.array([x0, y0])
     J_F = J(F)
     for i in range(N):
+        X0 = np.array([x0, y0])
         J_F_inv = np.linalg.inv(J_F(X0[0], X0[1])) # calcul de l'inverse de la jacobienne en x0, y0
         X = X0 - np.dot(J_F_inv,F(X0[0], X0[1])) # calcul du nouveau point X =(x, y)
         x, y = X[0], X[1]
         if np.sqrt((x - x0)**2 + (y - y0)**2) <= eps:
+            print(i)
             return (x, y)
         x0, y0 = x, y
     else:
         raise ValueError(f"no convergence in {N} steps.")
 
 
-X_sol = Newton(F1, 0.8, 0.8, 0.0001, 100)
+X_sol = Newton(F1, 0.8, 0.8, 0.001, 100)
 x1, x2 = X_sol[0], X_sol[1]
 print(X_sol, f1(x1, x2))
 
