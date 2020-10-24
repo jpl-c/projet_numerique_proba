@@ -20,15 +20,10 @@ def Newton(F, x0, y0, eps, N):
     X0 = np.array([x0, y0])
     J_F = J(F)
     for i in range(N):
-        print ('n = ', i)
-        print(x0, y0)
         J_F_inv = np.linalg.inv(J_F(X0[0], X0[1])) # calcul de l'inverse de la jacobienne en x0, y0
         X = X0 - np.dot(J_F_inv,F(X0[0], X0[1])) # calcul du nouveau point X =(x, y)
         x, y = X[0], X[1]
-        print(f"(x, y) = {(x,y)}")
         if np.sqrt((x - x0)**2 + (y - y0)**2) <= eps:
-            print(f"x0 = {x0}, y0 = {y0}, x  = {x}, y = {y}" )
-            print(np.sqrt((x - x0)**2 + (y - y0)**2))
             return (x, y)
         x0, y0 = x, y
     else:
@@ -42,17 +37,29 @@ def level_curve(f, x0, y0, delta=0.1, N=1000, eps=0.001):
     grad_f = grad(f)
     Grad0 = grad_f(x0, y0)
     norme_grad_f = np.sqrt(Grad0[0]**2 + Grad0[1]**2)
-    X = X0 + delta*np.dot(M_quart_tour_droit, Grad0)/norme_grad_f
+    X = X0 + delta*np.dot(M_quart_tour_droit, Grad0)/norme_grad_f # Calcul du point de départ de la méthode de Newton
+    
     def F(x,y):
-        return f(x,y), x**2 + y**2 - delta**2
+        return np.array([f(x,y), x**2 + y**2 - delta**2])
+
     X1 = Newton(F, X[0], X[1], eps, N)
     return (X1[0], X[1])
+
+
 
 def f1(x1, x2):
     x1 = np.array(x1)
     x2 = np.array(x2)
     return 3.0 * x1 * x1 - 2.0 * x1 * x2 + 3.0 * x2 * x2
 
-x0, y0 = []
+def F1(x,y):
+    return np.array([f1(x,y)-0.8, x-y])
 
-print(level_curve(f, x0, y0, delta=0.1, N=1000, eps=0.001))
+
+X0 = Newton(F1, 0.8, 0.8, 0.0001, 100)
+x0, y0 = X0[0], X0[1]
+X1 = level_curve(f1, x0, y0, delta=0.1, N=1000, eps=0.001)
+x1, y1 = X1[0], X1[1]
+dist = np.sqrt((x0-x1)**2 + (y0-y1)**2)
+print(X0, X1, '\n')
+print(f'dist = {dist}')
