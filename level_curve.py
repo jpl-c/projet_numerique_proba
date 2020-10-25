@@ -34,10 +34,9 @@ def Newton(F, x0, y0, eps = 10**(-7), N = 100):
 
 
 def level_curve(f, x0, y0, delta=0.1, N=1000, eps=10**(-7)):
-
+    c = f(x0, y0)
     def level_curve_1step(f, x0, y0, delta=0.1, N=1000, eps=10**(-7)):
             X0 = np.array([x0, y0])
-            c = f(x0, y0)
             grad_f = grad(f)
             Grad0 = grad_f(x0, y0)
             norme_grad_f = np.sqrt(Grad0[0]**2 + Grad0[1]**2)
@@ -51,9 +50,9 @@ def level_curve(f, x0, y0, delta=0.1, N=1000, eps=10**(-7)):
             X1 = Newton(F, X[0], X[1])
             return np.array([X1[0], X[1]])
 
-    tab_points = np.zeros(shape=(2, N))
+    tab_points = np.empty(shape=(2, N))
     tab_points[0][0], tab_points[1][0] = x0, y0
-    
+
     for i in range(N-1):
         x, y = tab_points[0][i], tab_points[1][i]
         x1, y1 = level_curve_1step(f, x, y)[0], level_curve_1step(f, x, y)[1]
@@ -87,7 +86,7 @@ Z = level_curve_1step(f2, y0, y1, delta=0.1, N=100, eps=0.001)
 print(Z)
 print(f2(Z[0],Z[1]))'''
 
-Tab_sol = level_curve(f1, x0, y0, delta=0.01, N=50, eps=0.001)
+Tab_sol = level_curve(f1, x0, y0, delta=0.01, N=500, eps=0.001)
 
 #plt.plot(level_curve(f2, np.sqrt(2)/2, np.sqrt(2)/2, delta=0.1, N=3, eps=0.001))
 plt.plot(Tab_sol[0][0], Tab_sol[1][0], 'bo')
